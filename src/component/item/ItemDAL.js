@@ -11,3 +11,9 @@ export const getAllItemDAL = async () => {
     const result = await dbUtil.query(sql, []);
     return result;
 }
+
+export const getItemByIdDAL = async (id) => {
+    let sql = 'select * from item where id = ?';
+    const result = await dbUtil.queryOne(sql, [id])
+    return result;
+}

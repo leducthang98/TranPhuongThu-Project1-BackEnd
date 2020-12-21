@@ -1,6 +1,6 @@
 import { ERRORS } from "../../constant/Errors";
 import { commonResponse } from "../../util/ResponseForm";
-import { createItemDAL, getAllItemDAL } from './ItemDAL';
+import { createItemDAL, getAllItemDAL, getItemByIdDAL } from './ItemDAL';
 export const createItem = async (req, res, next) => {
     let data = req.body;
     if (data.name && data.type) {
@@ -13,5 +13,11 @@ export const createItem = async (req, res, next) => {
 
 export const getAllItem = async (req, res, next) => {
     const result = await getAllItemDAL();
+    res.status(200).send(commonResponse(result))
+}
+
+export const getItemById = async (req, res, next) => {
+    const { id } = req.params
+    const result = await getItemByIdDAL(id);
     res.status(200).send(commonResponse(result))
 }
