@@ -10,8 +10,8 @@ export const controllerHandler = f => async (req, res, next) => {
 
 export const errorHandler = (error, req, res, next) => {
   if (typeof error === 'string') {
-    res.status(500);
-    res.send(commonResponse(error, 2, 'server-error'))
+    res.status(400);
+    res.send(commonResponse(null, 2, error))
   } else {
     let code = -1;
     let message = 'unknown-error';
@@ -24,7 +24,7 @@ export const errorHandler = (error, req, res, next) => {
       message = 'server-error'
     }
     res.status(error.status || 500);
-    
-    res.send(commonResponse(error.toString(), code, message))
+
+    res.send(commonResponse(null, code, error?.message))
   }
 };
