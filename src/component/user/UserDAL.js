@@ -5,6 +5,7 @@ import { ERRORS } from '../../constant/Errors';
 export const getUserByUserId = async (userId) => {
     let sql = 'select * from account where id = ?';
     const result = await dbUtil.queryOne(sql, [userId]);
+    delete result.password;
     return result;
 }
 
