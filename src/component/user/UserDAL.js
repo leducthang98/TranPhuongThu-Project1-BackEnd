@@ -3,7 +3,7 @@ import { hash, compare } from '../../util/BcryptUtil';
 import { ERRORS } from '../../constant/Errors';
 
 export const getUserByUserId = async (userId) => {
-    let sql = 'select id, username, email, age, gender, image from account where id = ?';
+    let sql = 'select * from account where id = ?';
     const result = await dbUtil.queryOne(sql, [userId]);
     return result;
 }
