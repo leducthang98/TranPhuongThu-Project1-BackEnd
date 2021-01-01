@@ -52,3 +52,13 @@ export const updateUserByUserId = async (userId, data) => {
     const result = await dbUtil.queryOne(sql, params);
     return result;
 }
+
+export const getAllUsersDAL = async () => {
+    let sql = 'select * from account';
+    let result = await dbUtil.query(sql, []);
+    for (let index = 0; index < result.length; index++) {
+        delete result[index].password
+        delete result[index].role
+    }
+    return result;
+}

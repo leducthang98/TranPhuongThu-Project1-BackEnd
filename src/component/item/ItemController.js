@@ -1,6 +1,6 @@
 import { ERRORS } from "../../constant/Errors";
 import { commonResponse } from "../../util/ResponseForm";
-import { createItemDAL, getAllItemDAL, getItemByIdDAL, searchItemDAL } from './ItemDAL';
+import { createItemDAL, deleteItemDAL, getAllItemDAL, getItemByIdDAL, searchItemDAL, updateItemDAL } from './ItemDAL';
 
 export const createItem = async (req, res, next) => {
     let data = req.body;
@@ -26,4 +26,19 @@ export const getItemById = async (req, res, next) => {
 export const searchItem = async (req, res, next) => {
     const result = await searchItemDAL(req?.query?.searchData, req?.query?.type);
     res.status(200).send(commonResponse(result))
+}
+
+export const updateItem = async (req, res, next) => {
+    const result = await updateItemDAL(req?.params?.itemId, req?.body);
+    res.status(200).send(commonResponse({
+        itemId: req?.params?.itemId,
+        updatedData: req?.body
+    }))
+}
+
+export const deleteItem = async (req, res, next) => {
+    const result = await deleteItemDAL(req?.params?.itemId);
+    res.status(200).send(commonResponse({
+        deletedItemId: req?.params?.itemId,
+    }))
 }

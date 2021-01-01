@@ -1,5 +1,5 @@
 import { commonResponse } from "../../util/ResponseForm";
-import { getUserByUserId, updateUserByUserId } from "./UserDAL";
+import { getUserByUserId, updateUserByUserId, getAllUsersDAL } from "./UserDAL";
 
 export const getMe = async (req, res, next) => {
     const { tokenDecoded } = req
@@ -17,4 +17,9 @@ export const updateMe = async (req, res, next) => {
         userId: userId,
         updatedData: dataUpdate
     }))
+}
+
+export const getAllUsers = async (req, res, next) => {
+    const result = await getAllUsersDAL();
+    res.send(commonResponse(result))
 }

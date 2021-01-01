@@ -16,7 +16,8 @@ export const login = async (req, res, next) => {
             if (isPasswordValid) {
                 let data = {
                     userId: user.id,
-                    username: user.username
+                    username: user.username,
+                    role: user.role
                 }
                 const token = await jwtUtil.generateToken(data, { expiresIn: TOKEN.TOKEN_EXPIRED })
                 let tokenInfo = {
