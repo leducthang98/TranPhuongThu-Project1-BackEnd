@@ -11,6 +11,15 @@ export const getUserByUserId = async (userId) => {
 export const updateUserByUserId = async (userId, data) => {
     let updatePart = 'update account set id = id';
     let params = []
+    console.log(data)
+    if (data.fullname) {
+        updatePart += ', fullname = ?';
+        params.push(data.fullname)
+    }
+    if (data.address) {
+        updatePart += ', address = ?';
+        params.push(data.address)
+    }
     if (data.password) {
         let passwordHashed = hash(data.password)
         updatePart += ', password = ?';

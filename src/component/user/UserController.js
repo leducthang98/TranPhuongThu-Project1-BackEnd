@@ -12,7 +12,9 @@ export const updateMe = async (req, res, next) => {
     const { tokenDecoded } = req
     const dataUpdate = req.body;
     let userId = tokenDecoded.userId;
-    console.log('aaa', dataUpdate)
     const result = await updateUserByUserId(userId, dataUpdate);
-    res.send(commonResponse(result))
+    res.send(commonResponse({
+        userId: userId,
+        updatedData: dataUpdate
+    }))
 }
