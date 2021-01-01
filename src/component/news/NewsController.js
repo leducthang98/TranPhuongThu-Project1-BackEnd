@@ -1,6 +1,6 @@
 import { ERRORS } from "../../constant/Errors";
 import { commonResponse } from "../../util/ResponseForm";
-import { getAllNewsDAL, increaseViewDAL } from "./NewsDAL";
+import { getAllNewsDAL, increaseViewDAL, searchNewsDAL } from "./NewsDAL";
 
 
 export const getAllNews = async (req, res, next) => {
@@ -14,4 +14,9 @@ export const increaseView = async (req, res, next) => {
         newsId: req.params.id,
         increase: 1
     }));
+}
+
+export const searchNews = async (req, res, next) => {
+    const response = await searchNewsDAL(req?.query?.searchData);
+    res.send(commonResponse(response));
 }
