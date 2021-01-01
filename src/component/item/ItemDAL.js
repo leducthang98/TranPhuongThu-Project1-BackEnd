@@ -35,9 +35,13 @@ export const getItemByIdDAL = async (id) => {
     return result;
 }
 
-export const searchItemDAL = async (searchData) => {
+export const searchItemDAL = async (searchData, type) => {
     let sql = 'select * from item where 1 = 1';
     let params = []
+    if (type) {
+        sql += ' and type = ?';
+        params.push(type);
+    }
     if (searchData) {
         sql += ' and lower(name) like ?';
         params.push('%' + searchData.toLowerCase() + '%');

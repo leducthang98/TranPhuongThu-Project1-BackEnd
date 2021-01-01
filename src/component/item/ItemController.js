@@ -24,6 +24,6 @@ export const getItemById = async (req, res, next) => {
 }
 
 export const searchItem = async (req, res, next) => {
-    const result = await searchItemDAL(req?.query?.searchData);
+    const result = await searchItemDAL(req?.query?.searchData, req?.query?.type);
     res.status(200).send(commonResponse(result))
 }
