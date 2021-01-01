@@ -10,7 +10,7 @@ const router = Router();
 
 router.get('/all', jwtFilter, controllerHandler(getAllNews));
 
-router.get('/increaseView/:id', jwtFilter, controllerHandler(increaseView));
+router.put('/increaseView/:id', jwtFilter, controllerHandler(increaseView));
 
 router.get('/search', jwtFilter, controllerHandler(searchNews));
 
