@@ -98,9 +98,13 @@ export const getMyOrdersDAL = async (userId) => {
                 }
             }
         }
-
+        let totalMoney = 0;
+        for (let j = 0; j < itemsInOrder.length; j++) {
+            totalMoney += itemsInOrder[j].price
+        }
         result[i] = {
             ...result[i],
+            totalMoney: totalMoney,
             items: distinctItem
         }
     }
