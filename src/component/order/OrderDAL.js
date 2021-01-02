@@ -48,13 +48,60 @@ export const getMyOrdersDAL = async (userId) => {
     let sql = 'select * from `order` where user_id = ? and status != 4 order by `created_time` DESC';
     const result = await dbUtil.query(sql, [userId]);
     for (let i = 0; i < result.length; i++) {
+        let debug = false;
+        if (i == 0) {
+            debug = true;
+        } else {
+            debug = false;
+        }
+        // 1 order
+        delete result[i].user_id
         let orderId = result[i].id;
         console.log(orderId)
-        let sql = 'SELECT i.*,io.order_id from item_order io INNER JOIN item i on io.item_id = i.id WHERE io.order_id = ?';
+        let sql = 'SELECT i.* from item_order io INNER JOIN item i on io.item_id = i.id WHERE io.order_id = ?';
         const itemsInOrder = await dbUtil.query(sql, [orderId]);
+        // order0's item : [1 5 5 5 1 3]
+        let distinctItem = []
+
+        for (let j = 0; j < itemsInOrder.length; j++) {
+            if (distinctItem.length == 0) {
+                distinctItem.push(itemsInOrder[j])
+            } else {
+                let isDuplicate = false;
+                for (let k = 0; k < distinctItem.length; k++) {
+                    if (distinctItem[k].id == itemsInOrder[j].id) {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+                if (!isDuplicate) {
+                    distinctItem.push(itemsInOrder[j])
+                }
+            }
+        }
+
+        for (let j = 0; j < distinctItem.length; j++) {
+
+            delete distinctItem[j].amount
+            delete distinctItem[j].deleted
+
+            distinctItem[j] = {
+                ...distinctItem[j],
+                count: 0
+            }
+        }
+
+        for (let j = 0; j < distinctItem.length; j++) {
+            for (let k = 0; k < itemsInOrder.length; k++) {
+                if (itemsInOrder[k].id == distinctItem[j].id) {
+                    distinctItem[j].count++;
+                }
+            }
+        }
+
         result[i] = {
             ...result[i],
-            items: itemsInOrder
+            items: distinctItem
         }
     }
     return result;
