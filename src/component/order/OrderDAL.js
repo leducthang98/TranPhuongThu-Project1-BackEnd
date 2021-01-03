@@ -114,4 +114,11 @@ export const getMyOrdersDAL = async (userId) => {
 export const cancelOrderDAL = async (orderId) => {
     let sql = 'update `order` set status = 4 where id = ?';
     const result = await dbUtil.query(sql, [orderId]);
+    return result;
+}
+
+export const getAllOrderDAL = async () => {
+    let sql = 'SELECT o.id as order_id, o.created_time as create_time, o.`status` as `status`,a.id as user_id, a.address as address, a.fullname as fullname from `order` o INNER JOIN account a on o.user_id = a.id';
+    const result = await dbUtil.query(sql, []);
+    return result;
 }

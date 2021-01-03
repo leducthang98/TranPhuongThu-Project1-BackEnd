@@ -1,6 +1,6 @@
 import { ERRORS } from "../../constant/Errors";
 import { commonResponse } from "../../util/ResponseForm";
-import { cancelOrderDAL, createOrderWithItemDAL, getMyOrdersDAL } from "./OrderDAL";
+import { cancelOrderDAL, createOrderWithItemDAL, getMyOrdersDAL, getAllOrderDAL } from "./OrderDAL";
 
 export const createOrderWithItem = async (req, res, next) => {
     const { tokenDecoded } = req
@@ -27,4 +27,9 @@ export const cancelOrder = async (req, res, next) => {
     res.send(commonResponse({
         orderCanceledId: req.params.orderId
     }))
+}
+
+export const getAllOrder = async (req, res, next) => {
+    const response = await getAllOrderDAL();
+    res.send(commonResponse(response))
 }
