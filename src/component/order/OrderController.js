@@ -1,6 +1,6 @@
 import { ERRORS } from "../../constant/Errors";
 import { commonResponse } from "../../util/ResponseForm";
-import { cancelOrderDAL, createOrderWithItemDAL, getMyOrdersDAL, getAllOrderDAL } from "./OrderDAL";
+import { cancelOrderDAL, createOrderWithItemDAL, getMyOrdersDAL, getAllOrderDAL, executeOrderDAL } from "./OrderDAL";
 
 export const createOrderWithItem = async (req, res, next) => {
     const { tokenDecoded } = req
@@ -31,5 +31,10 @@ export const cancelOrder = async (req, res, next) => {
 
 export const getAllOrder = async (req, res, next) => {
     const response = await getAllOrderDAL();
+    res.send(commonResponse(response))
+}
+
+export const executeOrder = async (req, res, next) => {
+    const response = await executeOrderDAL(req.query.orderId);
     res.send(commonResponse(response))
 }

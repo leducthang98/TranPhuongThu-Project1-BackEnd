@@ -122,3 +122,50 @@ export const getAllOrderDAL = async () => {
     const result = await dbUtil.query(sql, []);
     return result;
 }
+
+export const executeOrderDAL = async (orderId) => {
+
+    const transaction = await dbUtil.beginTransaction();
+    try {
+        // check còn hàng thì mới cho chốt => get all item của đơn hàng đấy
+        let isAbleToExecuteOrder = true;
+        let getItemInOrderSql = 'select *,count(item_id) as item_amount from `item_order` WHERE order_id = ? GROUP BY item_id;';
+        const itemInOrderData = await dbUtil.executeInTransaction(getItemInOrderSql, [orderId], transaction).catch(err => {
+            throw err;
+        });
+        console.warn('itemInOrder:', itemInOrderData)
+        for (let i = 0; i < itemInOrderData.length; i++) {
+            let getItemAmountSql = 'select amount from item where id = ?';
+            let itemId = itemInOrderData[i].item_id;
+            const res = await dbUtil.executeInTransaction(getItemAmountSql, [itemId], transaction).catch(err => {
+                throw err;
+            });
+            let itemAmount = res[0].amount
+            if (itemAmount < itemInOrderData[i].item_amount) {
+                isAbleToExecuteOrder = false;
+                break;
+            }
+        }
+        if (isAbleToExecuteOrder) {
+            // update lại hết số lượng các mặt hàng
+            for (let i = 0; i < itemInOrderData.length; i++) {
+                let updateItemAmountSql = 'UPDATE item set amount = amount - ? where id = ?;'
+                await dbUtil.executeInTransaction(updateItemAmountSql, [itemInOrderData[i].item_amount, itemInOrderData[i].item_id], transaction).catch(err => {
+                    throw err;
+                });
+            }
+            // update đơn hàng
+            let updateOrderSql = 'update `order` set status = 2 where id = ?';
+            await dbUtil.executeInTransaction(updateOrderSql, [orderId], transaction).catch(err => {
+                throw err;
+            });
+        } else {
+            throw 'Không đủ mặt hàng trong kho, không thể xuất đơn hàng.';
+        }
+        await dbUtil.commitTransaction(transaction);
+        return true;
+    } catch (e) {
+        await dbUtil.rollbackTransaction(transaction);
+        return Promise.reject(e);
+    }
+}
