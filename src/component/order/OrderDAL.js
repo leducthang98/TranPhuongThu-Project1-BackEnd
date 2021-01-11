@@ -172,25 +172,27 @@ export const executeOrderDAL = async (orderId) => {
 }
 
 export const getOrderDetailDAL = async (orderId) => {
-    let sql = 'select i.id as item_id,i.name as item_name,o.created_time as order_created_time,o.`status` as order_status,a.fullname,a.address,count(i.name) as amount from `item_order` io INNER JOIN item i on io.item_id = i.id INNER JOIN `order` o on io.order_id = o.id INNER JOIN account a ON o.user_id = a.id WHERE order_id = ? GROUP BY item_name'
+    let sql = 'select i.id as item_id,i.price,i.name as item_name,o.created_time as order_created_time,o.`status` as order_status,a.fullname,a.address,count(i.name) as amount from `item_order` io INNER JOIN item i on io.item_id = i.id INNER JOIN `order` o on io.order_id = o.id INNER JOIN account a ON o.user_id = a.id WHERE order_id = ? GROUP BY item_name'
     let result = await dbUtil.query(sql, [orderId])
     let orderCreatedTime = result[0]?.order_created_time
     let orderStatus = result[0]?.order_status
     let fullname = result[0]?.fullname
     let address = result[0]?.address
-
+    let sum = 0;
     for (let i = 0; i < result.length; i++) {
         delete result[i]?.order_created_time
         delete result[i]?.order_status
         delete result[i]?.fullname
         delete result[i]?.address
+        sum += result[i].price * result[i].amount;
     }
     let data = {
         orderCreatedTime: orderCreatedTime,
         orderStatus: orderStatus,
         fullname: fullname,
         address: address,
-        item: result
+        item: result,
+        totalMoney: sum
     }
     return data;
 }
